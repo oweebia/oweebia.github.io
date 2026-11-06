@@ -1,1111 +1,555 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oweebia — Création de Sites Web</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Bebas+Neue&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous"></script>
-  <!-- Google tag -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KGXT5255H1"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-KGXT5255H1');</script>
-  <template id="__bundler_thumbnail" data-bg-color="#070706">
-    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-      <rect width="1200" height="800" fill="#070706"/>
-      <text x="600" y="430" font-family="Georgia,serif" font-size="160" font-weight="300" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1" text-anchor="middle" letter-spacing="8">OWEEBIA</text>
-      <line x1="480" y1="490" x2="530" y2="490" stroke="#c9a66a" stroke-width="1.5"/>
-      <text x="550" y="497" font-family="sans-serif" font-size="16" fill="rgba(255,255,255,0.25)" letter-spacing="5">CRÉATION WEB</text>
-    </svg>
-  </template>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:      #070706;
-      --surface: #0f0f0d;
-      --sur2:    #161614;
-      --text:    #ede9e3;
-      --muted:   rgba(237,233,227,.38);
-      --gold:    #c9a66a;
-      --border:  rgba(237,233,227,.07);
-      --accent:  oklch(24% .09 264);
-      --ff-d: 'Cormorant Garamond', Georgia, serif;
-      --ff-b: 'DM Sans', system-ui, sans-serif;
-    }
-    html { scroll-behavior: auto; }
-    body { font-family: var(--ff-b); background: var(--bg); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-
-    /* PROGRESS BAR */
-    .progress-bar {
-      position: fixed; top: 0; left: 0; z-index: 9999;
-      height: 2px; width: 0%;
-      background: linear-gradient(to right, var(--gold), #e8c98a);
-      pointer-events: none;
-      transition: width .08s linear;
-    }
-
-    /* GRAIN */
-    .grain {
-      position: fixed; inset: 0; z-index: 9997; pointer-events: none; opacity: .05;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-      animation: grain .12s steps(1) infinite;
-    }
-    @keyframes grain {
-      0%,100%{background-position:0 0}10%{background-position:-5% -3%}20%{background-position:3% 5%}
-      30%{background-position:-4% 2%}40%{background-position:5% -4%}50%{background-position:-2% 5%}
-      60%{background-position:4% -2%}70%{background-position:-5% 4%}80%{background-position:3% -5%}90%{background-position:-3% 3%}
-    }
-
-    /* PRELOADER */
-    .preloader {
-      position: fixed; inset: 0; z-index: 9998; background: var(--bg);
-      display: flex; align-items: flex-end; justify-content: space-between;
-      padding: 48px 60px;
-    }
-    .pl-logo {
-      font-family: var(--ff-d); font-size: clamp(36px,6vw,72px);
-      font-weight: 300; letter-spacing: .06em; color: var(--text);
-      clip-path: inset(0 100% 0 0);
-    }
-    .pl-logo em { color: var(--gold); font-style: normal; }
-    .pl-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
-    .pl-count {
-      font-family: var(--ff-d); font-size: clamp(48px,8vw,96px);
-      font-weight: 300; color: var(--muted); line-height: 1;
-    }
-    .pl-bar-wrap { width: min(240px,50vw); height: 1px; background: rgba(237,233,227,.1); overflow: hidden; }
-    .pl-bar { height: 100%; width: 0%; background: var(--gold); }
-
-    /* NAV */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 60px; height: 72px;
-      transition: background .4s, border-color .4s;
-    }
-    nav.filled { background: rgba(7,7,6,.92); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); }
-    .nav-logo {
-      font-family: var(--ff-d); font-size: 20px; font-weight: 300;
-      letter-spacing: .08em; color: var(--text); text-decoration: none;
-      transition: color .2s;
-    }
-    .nav-logo:hover { color: var(--gold); }
-    .nav-logo em { color: var(--gold); font-style: normal; }
-    .nav-links { display: flex; gap: 40px; list-style: none; }
-    .nav-links a {
-      font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
-      color: var(--muted); text-decoration: none; transition: color .2s;
-      position: relative;
-    }
-    .nav-links a::after {
-      content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
-      height: 1px; background: var(--gold); transform: scaleX(0);
-      transform-origin: left; transition: transform .3s cubic-bezier(.16,1,.3,1);
-    }
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a:hover::after { transform: scaleX(1); }
-    .nav-cta {
-      font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
-      font-weight: 500; padding: 10px 24px;
-      border: 1px solid rgba(237,233,227,.2); color: var(--text);
-      text-decoration: none; transition: background .25s, border-color .25s, color .25s, transform .2s;
-    }
-    .nav-cta:hover { background: var(--gold); border-color: var(--gold); color: var(--bg); transform: translateY(-1px); }
-    .nav-ham {
-      display: none; flex-direction: column; gap: 5px;
-      width: 44px; height: 44px; align-items: center; justify-content: center;
-      background: none; border: none; cursor: pointer; padding: 0;
-    }
-    .nav-ham span { display: block; width: 22px; height: 1px; background: var(--text); transition: transform .3s, opacity .3s; }
-    .nav-ham.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-    .nav-ham.open span:nth-child(2) { opacity: 0; }
-    .nav-ham.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-    /* MOBILE MENU */
-    .mob-menu {
-      position: fixed; inset: 0; z-index: 190; background: var(--bg);
-      display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px;
-      opacity: 0; pointer-events: none; transition: opacity .35s;
-    }
-    .mob-menu.open { opacity: 1; pointer-events: auto; }
-    .mob-menu a {
-      font-family: var(--ff-d); font-size: clamp(40px,10vw,64px);
-      font-weight: 300; color: rgba(237,233,227,.65); text-decoration: none;
-      letter-spacing: .02em; transition: color .25s, transform .25s; padding: 6px 0;
-      display: block;
-    }
-    .mob-menu a:hover { color: var(--gold); transform: translateX(8px); }
-    .mob-cta {
-      margin-top: 28px; padding: 16px 40px;
-      background: var(--gold) !important; color: var(--bg) !important;
-      font-family: var(--ff-b) !important; font-size: 13px !important;
-      letter-spacing: .1em !important; text-transform: uppercase; font-weight: 500 !important;
-      transform: none !important;
-    }
-    .mob-foot {
-      position: absolute; bottom: 36px; font-size: 10px;
-      letter-spacing: .18em; text-transform: uppercase; color: rgba(237,233,227,.18);
-    }
-
-    /* HERO */
-    #hero {
-      min-height: 100svh; position: relative; overflow: hidden;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 60px 80px;
-    }
-    #hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
-    .hero-bg-word {
-      position: absolute; top: 50%; right: -2%;
-      font-family: var(--ff-d); font-size: clamp(160px,21vw,340px);
-      font-weight: 300; line-height: 1; letter-spacing: -.02em;
-      color: transparent; -webkit-text-stroke: 1px rgba(237,233,227,.045);
-      pointer-events: none; user-select: none; z-index: 1;
-      will-change: transform;
-    }
-    .hero-content { position: relative; z-index: 2; max-width: 920px; }
-    .hero-eyebrow {
-      font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 28px;
-      display: flex; align-items: center; gap: 16px; opacity: 0;
-    }
-    .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--gold); flex-shrink: 0; }
-    .hero-title {
-      font-family: var(--ff-d); font-size: clamp(52px,7vw,110px);
-      font-weight: 300; line-height: 1.03; letter-spacing: -.01em; margin-bottom: 52px;
-    }
-    .lw { overflow: hidden; display: block; }
-    .ln { display: block; transform: translateY(108%); }
-    .ln.it { font-style: italic; color: var(--gold); }
-    .hero-bottom {
-      display: flex; justify-content: space-between; align-items: flex-end;
-      gap: 40px; opacity: 0; transform: translateY(20px);
-    }
-    .hero-sub { font-size: 15px; font-weight: 300; color: var(--muted); line-height: 1.9; max-width: 340px; }
-    .hero-btns { display: flex; gap: 14px; flex-shrink: 0; }
-    .btn-p {
-      display: inline-block; padding: 16px 36px;
-      background: var(--text); color: var(--bg);
-      font-size: 12px; font-weight: 500; letter-spacing: .1em;
-      text-transform: uppercase; text-decoration: none;
-      transition: background .25s, transform .2s;
-    }
-    .btn-p:hover { background: var(--gold); transform: translateY(-2px); }
-    .btn-g {
-      display: inline-block; padding: 16px 28px;
-      border: 1px solid rgba(237,233,227,.18); color: var(--muted);
-      font-size: 12px; font-weight: 400; letter-spacing: .08em;
-      text-transform: uppercase; text-decoration: none;
-      transition: color .2s, border-color .2s, transform .2s;
-    }
-    .btn-g:hover { color: var(--text); border-color: rgba(237,233,227,.4); transform: translateY(-2px); }
-    .scroll-hint {
-      position: absolute; bottom: 44px; right: 60px; z-index: 2;
-      display: flex; align-items: center; gap: 12px; opacity: 0;
-    }
-    .scroll-hint-txt {
-      font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
-      color: var(--muted); writing-mode: vertical-rl;
-    }
-    .scroll-hint-line {
-      width: 1px; height: 54px;
-      background: linear-gradient(to bottom, var(--gold), transparent);
-      animation: pline 2s ease-in-out infinite;
-    }
-    @keyframes pline { 0%,100%{opacity:.35;transform:scaleY(1)}50%{opacity:1;transform:scaleY(.65)} }
-
-    /* MARQUEE */
-    .marquee-strip { background: var(--gold); padding: 13px 0; overflow: hidden; white-space: nowrap; }
-    .marquee-track { display: inline-flex; animation: mq 24s linear infinite; }
-    .marquee-strip:hover .marquee-track { animation-play-state: paused; }
-    .mq-item {
-      display: inline-flex; align-items: center; gap: 28px;
-      padding: 0 28px; font-size: 11px; letter-spacing: .16em;
-      text-transform: uppercase; font-weight: 500; color: rgba(0,0,0,.5);
-    }
-    .mq-sep { color: rgba(0,0,0,.2); }
-    @keyframes mq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-
-    /* SECTIONS */
-    .sec { padding: 120px 60px; }
-    .sec-lbl {
-      font-size: 10px; font-weight: 500; letter-spacing: .22em;
-      text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
-      display: flex; align-items: center; gap: 14px;
-    }
-    .sec-lbl::after { content: ''; flex: 0 0 24px; height: 1px; background: var(--gold); }
-    .sec-title { font-family: var(--ff-d); font-size: clamp(38px,4vw,64px); font-weight: 300; line-height: 1.1; }
-    .sec-title em { font-style: italic; color: var(--gold); }
-
-    /* REVEAL — clip-path slide up */
-    .rv { opacity: 0; transform: translateY(36px); }
-    .rv.in {
-      opacity: 1; transform: translateY(0);
-      transition: opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1);
-    }
-    .d1.in { transition-delay: .1s; } .d2.in { transition-delay: .22s; }
-    .d3.in { transition-delay: .34s; } .d4.in { transition-delay: .48s; }
-
-    /* ABOUT */
-    #apropos { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; background: var(--bg); }
-    .ab-vis {
-      aspect-ratio: 4/5; background: var(--surface);
-      position: relative; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .ab-vis-glow {
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 30% 70%, rgba(201,166,106,.08) 0%, transparent 70%);
-    }
-    .ab-vis-grid {
-      position: absolute; inset: 0;
-      background-image: linear-gradient(var(--border) 1px,transparent 1px), linear-gradient(90deg,var(--border) 1px,transparent 1px);
-      background-size: 40px 40px;
-    }
-    .ab-vis-word { font-family: var(--ff-d); font-size: 100px; font-weight: 300; color: rgba(237,233,227,.04); user-select: none; z-index: 1; }
-    .ab-vis-tag { position: absolute; bottom: 28px; left: 28px; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: rgba(237,233,227,.3); z-index: 1; }
-    .ab-vis-line { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, var(--gold), transparent); }
-    /* SVG drawing animation */
-    .ab-vis-svg {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 2;
-    }
-    .ab-vis-svg path {
-      fill: none; stroke: rgba(201,166,106,.12); stroke-width: 1;
-      stroke-dasharray: 400; stroke-dashoffset: 400;
-      transition: stroke-dashoffset 2s cubic-bezier(.16,1,.3,1);
-    }
-    .rv.in .ab-vis-svg path { stroke-dashoffset: 0; }
-    .ab-text .sec-title { margin-bottom: 28px; }
-    .ab-text p { font-size: 15px; font-weight: 300; color: var(--muted); line-height: 1.9; margin-bottom: 18px; }
-    .ab-stats { display: flex; gap: 48px; margin-top: 48px; padding-top: 36px; border-top: 1px solid var(--border); }
-    .stn { font-family: var(--ff-d); font-size: 48px; font-weight: 300; line-height: 1; color: var(--text); margin-bottom: 6px; }
-    .stn em { color: var(--gold); font-style: normal; }
-    .stl { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-
-    /* OFFRES */
-    #offres { background: var(--surface); }
-    #offres .sec-title { color: var(--text); margin-bottom: 64px; }
-    .offres-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); }
-    .oc {
-      background: var(--surface); padding: 48px 40px;
-      transition: background .3s; cursor: default;
-      transform-style: preserve-3d; will-change: transform;
-      position: relative; overflow: hidden;
-      --sx: 50%; --sy: 50%;
-    }
-    /* spotlight effect */
-    .oc::after {
-      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
-      background: radial-gradient(circle 240px at var(--sx) var(--sy), rgba(201,166,106,.11), transparent 70%);
-      opacity: 0; transition: opacity .4s;
-    }
-    .oc:hover::after { opacity: 1; }
-    .oc:hover { background: #1b1b18; }
-    .oc.feat { background: var(--accent); }
-    .oc.feat:hover { background: oklch(26% .09 264); }
-    .oc.feat::after { background: radial-gradient(circle 240px at var(--sx) var(--sy), rgba(237,233,227,.07), transparent 70%); }
-    .oc-num { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 28px; display: block; position: relative; z-index: 2; }
-    .oc.feat .oc-num { color: rgba(237,233,227,.45); }
-    .oc-name { font-family: var(--ff-d); font-size: 34px; font-weight: 300; color: var(--text); line-height: 1.1; margin-bottom: 16px; position: relative; z-index: 2; }
-    .oc-desc { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.85; margin-bottom: 32px; position: relative; z-index: 2; }
-    .oc.feat .oc-desc { color: rgba(237,233,227,.65); }
-    .oc-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px; position: relative; z-index: 2; }
-    .oc-list li { font-size: 13px; color: var(--muted); display: flex; align-items: flex-start; gap: 12px; }
-    .oc.feat .oc-list li { color: rgba(237,233,227,.78); }
-    .oc-list li::before { content: ''; width: 14px; height: 1px; background: var(--gold); margin-top: 10px; flex-shrink: 0; }
-    .oc-cta {
-      display: inline-block; padding: 12px 26px;
-      border: 1px solid rgba(237,233,227,.15); color: var(--muted);
-      font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-      text-decoration: none; transition: border-color .25s, color .25s, transform .2s;
-      position: relative; z-index: 2;
-    }
-    .oc-cta:hover { border-color: var(--gold); color: var(--gold); transform: translateX(4px); }
-    .oc.feat .oc-cta { border-color: rgba(237,233,227,.22); color: rgba(237,233,227,.65); }
-
-    /* PORTFOLIO */
-    #portfolio { background: var(--bg); }
-    .port-hdr { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; }
-    .port-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
-    .pi { aspect-ratio: 4/3; position: relative; overflow: hidden; cursor: pointer; background: var(--sur2); }
-    .pi-inner { position: absolute; inset: 0; transition: transform .6s cubic-bezier(.16,1,.3,1); }
-    .pi:hover .pi-inner { transform: scale(1.04); }
-    .pi-stripe { position: absolute; inset: 0; background: repeating-linear-gradient(-45deg,transparent,transparent 10px,rgba(255,255,255,.014) 10px,rgba(255,255,255,.014) 20px); }
-    .pi-lbl { position: absolute; bottom: 18px; left: 20px; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: rgba(237,233,227,.28); z-index: 2; }
-    .pi-over {
-      position: absolute; inset: 0; background: var(--accent);
-      display: flex; flex-direction: column; justify-content: flex-end; padding: 28px;
-      opacity: 0; transition: opacity .4s; z-index: 3;
-    }
-    .pi:hover .pi-over { opacity: 1; }
-    .pi-title { font-family: var(--ff-d); font-size: 24px; font-weight: 300; color: var(--text); margin-bottom: 4px; }
-    .pi-sub { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(237,233,227,.48); }
-    .port-coming { margin-top: 32px; text-align: center; font-size: 13px; color: var(--muted); font-weight: 300; }
-
-    /* DEVIS */
-    #devis { background: var(--surface); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-    #devis .sec-title { color: var(--text); margin-bottom: 24px; }
-    .dv-intro { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.9; margin-bottom: 40px; }
-    .dv-pts { list-style: none; display: flex; flex-direction: column; gap: 14px; }
-    .dv-pts li { display: flex; gap: 14px; align-items: flex-start; font-size: 13px; color: var(--muted); }
-    .dv-pts li::before { content: ''; width: 16px; height: 1px; background: var(--gold); margin-top: 9px; flex-shrink: 0; }
-    .form { display: flex; flex-direction: column; gap: 18px; }
-    .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .fg { display: flex; flex-direction: column; gap: 7px; }
-    .fl { font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: rgba(237,233,227,.28); font-weight: 500; }
-    .fi, .fsel, .fta {
-      background: rgba(237,233,227,.04); border: 1px solid rgba(237,233,227,.08);
-      color: var(--text); padding: 13px 16px; font-size: 14px; font-weight: 300;
-      font-family: var(--ff-b); outline: none; -webkit-appearance: none;
-      transition: border-color .3s, background .3s; border-radius: 0;
-    }
-    .fi::placeholder, .fta::placeholder { color: rgba(237,233,227,.18); }
-    .fi:focus, .fsel:focus, .fta:focus { border-color: var(--gold); background: rgba(237,233,227,.06); }
-    .fsel { cursor: pointer; }
-    .fsel option { background: #1a1a18; }
-    .fta { resize: vertical; min-height: 110px; }
-    .fsub {
-      padding: 16px 36px; background: var(--gold); border: none;
-      color: var(--bg); font-size: 12px; font-weight: 500;
-      letter-spacing: .1em; text-transform: uppercase; font-family: var(--ff-b);
-      cursor: pointer; transition: opacity .25s, transform .2s; align-self: flex-start;
-    }
-    .fsub:hover { opacity: .85; transform: translateY(-2px); }
-    .form-ok {
-      display: none; padding: 18px 22px; border: 1px solid rgba(237,233,227,.1);
-      background: rgba(237,233,227,.04); font-size: 13px; color: var(--muted); line-height: 1.7;
-    }
-
-    /* FOOTER */
-    footer {
-      padding: 60px 60px; border-top: 1px solid var(--border); background: var(--bg);
-      display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 40px;
-    }
-    .ft-brand { font-family: var(--ff-d); font-size: 20px; font-weight: 300; letter-spacing: .06em; }
-    .ft-brand em { color: var(--gold); font-style: normal; }
-    .ft-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .ft-links { display: flex; gap: 32px; }
-    .ft-links a { font-size: 12px; color: var(--muted); text-decoration: none; letter-spacing: .04em; transition: color .2s; }
-    .ft-links a:hover { color: var(--text); }
-    .ft-copy { font-size: 11px; color: rgba(237,233,227,.2); text-align: right; line-height: 1.6; }
-
-
-    /* LANG TOGGLE */
-    .lang-toggle {
-      display: flex; align-items: center; gap: 0;
-      background: none; border: none; cursor: pointer;
-      font-family: var(--ff-b); margin-left: 20px;
-    }
-    .lang-opt {
-      font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
-      padding: 6px 10px; color: var(--muted); border: 1px solid transparent;
-      transition: color .2s, border-color .2s; line-height: 1; cursor: pointer;
-      background: none; font-family: var(--ff-b);
-    }
-    .lang-opt.active { color: var(--gold); border-color: rgba(201,166,106,.35); }
-    .lang-sep { color: rgba(237,233,227,.15); font-size: 11px; }
-    /* mobile lang */
-    .mob-lang { display: flex; align-items: center; gap: 8px; margin-top: 20px; }
-    .mob-lang button {
-      font-family: var(--ff-d); font-size: 22px; font-weight: 300;
-      color: rgba(237,233,227,.4); background: none; border: none; cursor: pointer;
-      letter-spacing: .04em; transition: color .2s;
-    }
-    .mob-lang button.active { color: var(--gold); }
-    .mob-lang .mob-lang-sep { color: rgba(237,233,227,.15); font-size: 18px; }
-
-    /* RESPONSIVE */
-    @media (max-width: 1024px) {
-      nav { padding: 0 32px; }
-      nav .nav-links, nav .nav-cta { display: none; }
-      .nav-ham { display: flex; }
-      .sec { padding: 80px 32px; }
-      #hero { padding: 0 32px 64px; }
-      #apropos { grid-template-columns: 1fr; gap: 48px; }
-      .ab-vis { aspect-ratio: 16/7; }
-      .offres-grid { grid-template-columns: 1fr; }
-      .port-grid { grid-template-columns: repeat(2,1fr); }
-      #devis { grid-template-columns: 1fr; gap: 48px; }
-      footer { grid-template-columns: 1fr; gap: 24px; }
-      .ft-copy { text-align: left; }
-    }
-    @media (max-width: 640px) {
-      nav { padding: 0 20px; height: 60px; }
-      .sec { padding: 56px 20px; }
-      #hero { padding: 0 20px 56px; }
-      .hero-bg-word { display: none; }
-      .hero-bottom { flex-direction: column; align-items: flex-start; gap: 24px; }
-      .hero-btns { width: 100%; flex-direction: column; }
-      .btn-p, .btn-g { width: 100%; text-align: center; padding: 18px; font-size: 13px; }
-      .scroll-hint { display: none; }
-      .ab-stats { flex-direction: column; gap: 24px; }
-      .oc { padding: 36px 24px; }
-      .port-grid { grid-template-columns: 1fr; }
-      .port-hdr { flex-direction: column; align-items: flex-start; gap: 12px; }
-      .frow { grid-template-columns: 1fr; }
-      .fsub { width: 100%; text-align: center; padding: 18px; }
-      footer { padding: 48px 20px; gap: 20px; }
-      .ft-links { flex-direction: column; gap: 12px; }
-      .sec-title { font-size: clamp(32px,8vw,48px); }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="progress-bar" id="progressBar"></div>
-  <div class="grain" aria-hidden="true"></div>
-
-  <!-- PRELOADER -->
-  <div class="preloader" id="preloader">
-    <div class="pl-logo" id="plLogo">OWEEBIA<em>.</em></div>
-    <div class="pl-right">
-      <div class="pl-count" id="plCount">0</div>
-      <div class="pl-bar-wrap"><div class="pl-bar" id="plBar"></div></div>
-    </div>
-  </div>
-
-  <!-- NAV -->
-  <nav id="nav">
-    <a class="nav-logo" href="#">OWEEBIA<em>.</em></a>
-    <ul class="nav-links">
-      <li><a href="#apropos" data-i18n="nav_about">À propos</a></li>
-      <li><a href="#offres" data-i18n="nav_services">Offres</a></li>
-      <li><a href="#portfolio" data-i18n="nav_portfolio">Réalisations</a></li>
-      <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
-    </ul>
-    <a class="nav-cta" href="#devis" data-i18n="cta_quote">Demander un devis</a>
-    <div class="lang-toggle" id="langToggle">
-      <button class="lang-opt active" data-lang="fr">FR</button>
-      <span class="lang-sep">/</span>
-      <button class="lang-opt" data-lang="en">EN</button>
-    </div>
-    <button class="nav-ham" id="navHam" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
-
-  <!-- MOBILE MENU -->
-  <div class="mob-menu" id="mobMenu">
-    <a href="#apropos" class="mob-lnk" data-i18n="nav_about">À propos</a>
-    <a href="#offres" class="mob-lnk" data-i18n="nav_services">Offres</a>
-    <a href="#portfolio" class="mob-lnk" data-i18n="nav_portfolio">Réalisations</a>
-    <a href="#devis" class="mob-lnk mob-cta" data-i18n="cta_quote">Demander un devis</a>
-    <div class="mob-lang">
-      <button class="lang-opt active" data-lang="fr" id="mobLangFr">FR</button>
-      <span class="mob-lang-sep">/</span>
-      <button class="lang-opt" data-lang="en" id="mobLangEn">EN</button>
-    </div>
-    <div class="mob-foot" data-i18n="footer_tagline">Oweebia · Création Web</div>
-  </div>
-
-  <!-- HERO -->
-  <section id="hero">
-    <canvas id="hero-canvas"></canvas>
-    <div class="hero-bg-word" id="heroBgWord" aria-hidden="true">OWEEBIA</div>
-    <div class="hero-content">
-      <p class="hero-eyebrow" data-i18n="hero_eyebrow">Création de sites web · 2025</p>
-      <h1 class="hero-title">
-        <span class="lw"><span class="ln" data-i18n="hero_line1">Votre présence</span></span>
-        <span class="lw"><span class="ln it" data-i18n="hero_line2">en ligne,</span></span>
-        <span class="lw"><span class="ln" data-i18n="hero_line3">pensée pour durer.</span></span>
-      </h1>
-      <div class="hero-bottom">
-        <p class="hero-sub" data-i18n="hero_sub">Oweebia conçoit des sites web sur mesure pour les entreprises et entrepreneurs qui veulent se distinguer.</p>
-        <div class="hero-btns">
-          <a class="btn-p" href="#devis" data-i18n="cta_quote">Demander un devis</a>
-          <a class="btn-g" href="#offres" data-i18n="hero_discover">Découvrir</a>
-        </div>
-      </div>
-    </div>
-    <div class="scroll-hint">
-      <span class="scroll-hint-txt">Scroll</span>
-      <div class="scroll-hint-line"></div>
-    </div>
-  </section>
-
-  <!-- MARQUEE -->
-  <div class="marquee-strip">
-    <div class="marquee-track">
-      <span class="mq-item" data-i18n="mq1">Site Vitrine <span class="mq-sep">·</span></span>
-      <span class="mq-item">E-commerce <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq3">Maintenance mensuelle <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq4">Design sur mesure <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq5">Hébergement inclus <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq6">SEO optimisé <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq7">Compatible mobile <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq1">Site Vitrine <span class="mq-sep">·</span></span>
-      <span class="mq-item">E-commerce <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq3">Maintenance mensuelle <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq4">Design sur mesure <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq5">Hébergement inclus <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq6">SEO optimisé <span class="mq-sep">·</span></span>
-      <span class="mq-item" data-i18n="mq7">Compatible mobile <span class="mq-sep">·</span></span>
-    </div>
-  </div>
-
-  <!-- À PROPOS -->
-  <section id="apropos" class="sec">
-    <div class="ab-vis rv">
-      <div class="ab-vis-glow"></div>
-      <div class="ab-vis-grid"></div>
-      <svg class="ab-vis-svg" viewBox="0 0 600 750" preserveAspectRatio="none">
-        <path d="M60,60 L540,60 L540,690 L60,690 Z"/>
-        <path d="M100,100 L500,100 L500,650 L100,650 Z"/>
-        <path d="M300,60 L300,690"/>
-        <path d="M60,375 L540,375"/>
-      </svg>
-      <div class="ab-vis-word">OW</div>
-      <span class="ab-vis-tag">Oweebia Studio</span>
-      <div class="ab-vis-line"></div>
-    </div>
-    <div class="ab-text">
-      <p class="sec-lbl rv" data-i18n="about_lbl">À propos</p>
-      <h2 class="sec-title rv d1" data-i18n-html="about_title">Concevoir. Construire.<br><em>Faire rayonner.</em></h2>
-      <p class="rv d2" data-i18n="about_p1">Oweebia est une agence spécialisée dans la création de sites web sur mesure. Nous accompagnons chaque client de la conception à la mise en ligne, avec une approche centrée sur la clarté, l'esthétique et la performance.</p>
-      <p class="rv d3" data-i18n="about_p2">Chaque projet est unique. Nous prenons le temps de comprendre votre activité, vos objectifs et vos clients pour vous livrer un site qui vous ressemble vraiment et qui convertit.</p>
-      <div class="ab-stats">
-        <div class="rv d1">
-          <div class="stn"><span class="ctr" data-target="100">0</span><em>%</em></div>
-          <div class="stl" data-i18n="stat1">Sur mesure</div>
-        </div>
-        <div class="rv d2">
-          <div class="stn"><span class="ctr" data-target="3">0</span></div>
-          <div class="stl" data-i18n="stat2">Offres adaptées</div>
-        </div>
-        <div class="rv d3">
-          <div class="stn">∞</div>
-          <div class="stl" data-i18n="stat3">Accompagnement</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- OFFRES -->
-  <section id="offres" class="sec">
-    <p class="sec-lbl rv" data-i18n="services_lbl">Nos offres</p>
-    <h2 class="sec-title rv d1" data-i18n-html="services_title">Un projet, une offre<br><em>à votre mesure.</em></h2>
-    <div class="offres-grid" style="margin-top:64px;">
-      <div class="oc tilt rv d1">
-        <span class="oc-num" data-i18n="o1_num">Offre 01</span>
-        <h3 class="oc-name" data-i18n="o1_name">Site Vitrine</h3>
-        <p class="oc-desc" data-i18n="o1_desc">Un site professionnel pour présenter votre activité, établir votre crédibilité et capter de nouveaux clients.</p>
-        <ul class="oc-list">
-          <li data-i18n="o1_f1">Design sur mesure</li>
-          <li data-i18n="o1_f2">Jusqu'à 5 pages</li>
-          <li data-i18n="o1_f3">Formulaire de contact</li>
-          <li data-i18n="o1_f4">Optimisation SEO de base</li>
-          <li data-i18n="o1_f5">Compatible mobile &amp; tablette</li>
-          <li data-i18n="o1_f6">Livraison clé en main</li>
-        </ul>
-        <a class="oc-cta" href="#devis" data-i18n="cta_quote">Demander un devis</a>
-      </div>
-      <div class="oc feat tilt rv d2">
-        <span class="oc-num" data-i18n="o2_num">Offre 02 — Recommandée</span>
-        <h3 class="oc-name" data-i18n="o2_name">Pack Sérénité</h3>
-        <p class="oc-desc" data-i18n="o2_desc">Votre site vitrine professionnel, hébergé et maintenu chaque mois pour que vous n'ayez rien à gérer.</p>
-        <ul class="oc-list">
-          <li data-i18n="o2_f1">Tout ce qui est inclus dans l'offre 01</li>
-          <li data-i18n="o2_f2">Hébergement inclus</li>
-          <li data-i18n="o2_f3">Nom de domaine</li>
-          <li data-i18n="o2_f4">Mises à jour régulières</li>
-          <li data-i18n="o2_f5">Support prioritaire</li>
-          <li data-i18n="o2_f6">Sauvegardes automatiques</li>
-        </ul>
-        <a class="oc-cta" href="#devis" data-i18n="cta_quote">Demander un devis</a>
-      </div>
-      <div class="oc tilt rv d3">
-        <span class="oc-num" data-i18n="o3_num">Offre 03</span>
-        <h3 class="oc-name" data-i18n="o3_name">Pack Complexe</h3>
-        <p class="oc-desc" data-i18n="o3_desc">Pour les projets ambitieux : e-commerce, plateformes, espaces membres, intégrations avancées et maintenance continue.</p>
-        <ul class="oc-list">
-          <li data-i18n="o3_f1">Architecture sur mesure</li>
-          <li data-i18n="o3_f2">E-commerce / espace client</li>
-          <li data-i18n="o3_f3">Intégrations &amp; API</li>
-          <li data-i18n="o3_f4">SEO avancé</li>
-          <li data-i18n="o3_f5">Maintenance mensuelle dédiée</li>
-          <li data-i18n="o3_f6">Suivi de performance</li>
-        </ul>
-        <a class="oc-cta" href="#devis" data-i18n="cta_quote">Demander un devis</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- PORTFOLIO -->
-  <section id="portfolio" class="sec">
-    <div class="port-hdr">
-      <div>
-        <p class="sec-lbl rv" data-i18n="port_lbl">Réalisations</p>
-        <h2 class="sec-title rv d1" data-i18n-html="port_title">Nos <em>projets</em></h2>
-      </div>
-    </div>
-    <div class="port-grid">
-      <div class="pi rv">
-        <div class="pi-inner" style="position:absolute;inset:0;overflow:hidden;background:#111;display:flex;flex-direction:column;">
-          <!-- Browser chrome -->
-          <div style="flex-shrink:0;background:#1c1c1c;padding:8px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08);">
-            <div style="display:flex;gap:5px;">
-              <div style="width:9px;height:9px;border-radius:50%;background:#ff5f57;"></div>
-              <div style="width:9px;height:9px;border-radius:50%;background:#febc2e;"></div>
-              <div style="width:9px;height:9px;border-radius:50%;background:#28c840;"></div>
-            </div>
-            <div style="flex:1;background:#2a2a2a;border-radius:4px;padding:3px 10px;display:flex;align-items:center;gap:6px;">
-              <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="rgba(255,255,255,.3)" stroke-width="1"/><path d="M6 1v5l3 2" stroke="rgba(255,255,255,.3)" stroke-width="1"/></svg>
-              <span style="font-size:8px;color:rgba(255,255,255,.35);letter-spacing:.02em;">soroslab.lovable.app</span>
-            </div>
-          </div>
-          <!-- Screenshot -->
-          <div style="flex:1;overflow:hidden;position:relative;">
-            <img src="soros-screenshot.png" alt="SOROS" style="position:absolute;top:0;left:0;width:100%;height:auto;">
-          </div>
-        </div>
-        <div class="pi-over">
-          <div class="pi-title">SOROS</div>
-          <div class="pi-sub" data-i18n="port_p1_sub">Site événementiel · Collectif musical</div>
-        </div>
-      </div>
-      <div class="pi rv d1">
-        <div class="pi-inner"><div class="pi-stripe"></div></div>
-        <div class="pi-lbl" data-i18n="port_coming_lbl">Capture de site — à venir</div>
-        <div class="pi-over">
-          <div class="pi-title">Projet E-commerce</div>
-          <div class="pi-sub" data-i18n="port_p2_sub">Boutique en ligne</div>
-        </div>
-      </div>
-      <div class="pi rv d2">
-        <div class="pi-inner"><div class="pi-stripe"></div></div>
-        <div class="pi-lbl" data-i18n="port_coming_lbl">Capture de site — à venir</div>
-        <div class="pi-over">
-          <div class="pi-title">Projet Plateforme</div>
-          <div class="pi-sub" data-i18n="port_p3_sub">Application web</div>
-        </div>
-      </div>
-    </div>
-    <p class="port-coming rv" data-i18n="port_soon">D'autres réalisations seront bientôt présentées ici.</p>
-  </section>
-
-  <!-- DEVIS -->
-  <section id="devis" class="sec">
-    <div>
-      <p class="sec-lbl rv" data-i18n="quote_lbl">Devis gratuit</p>
-      <h2 class="sec-title rv d1" data-i18n-html="quote_title">Parlons<br><em>de votre projet.</em></h2>
-      <p class="dv-intro rv d2" data-i18n="quote_intro">Chaque projet est unique. Décrivez-nous vos besoins et nous vous ferons parvenir une proposition personnalisée et sans engagement sous 48h.</p>
-      <ul class="dv-pts rv d3">
-        <li data-i18n="quote_pt1">Réponse sous 48h ouvrées</li>
-        <li data-i18n="quote_pt2">Devis 100% gratuit et sans engagement</li>
-        <li data-i18n="quote_pt3">Accompagnement de A à Z</li>
-        <li data-i18n="quote_pt4">Tarification transparente</li>
-      </ul>
-    </div>
-    <div>
-      <form class="form rv d1" id="devisForm">
-        <div class="frow">
-          <div class="fg"><label class="fl" data-i18n="form_name">Prénom &amp; Nom</label><input class="fi" type="text" name="nom" placeholder="Jean Dupont" data-i18n-ph="form_name_ph" required></div>
-          <div class="fg"><label class="fl" data-i18n="form_company">Entreprise</label><input class="fi" type="text" name="entreprise" placeholder="Votre société" data-i18n-ph="form_company_ph"></div>
-        </div>
-        <div class="frow">
-          <div class="fg"><label class="fl" data-i18n="form_email">Email</label><input class="fi" type="email" name="email" placeholder="jean@example.com" required></div>
-          <div class="fg"><label class="fl" data-i18n="form_phone">Téléphone</label><input class="fi" type="tel" name="telephone" placeholder="+41 79 000 00 00"></div>
-        </div>
-        <div class="fg">
-          <label class="fl" data-i18n="form_type">Type de projet</label>
-          <select class="fsel" name="offre">
-            <option value="" data-i18n="form_type_ph">Sélectionnez une offre</option>
-            <option data-i18n="form_type_o1">Site vitrine</option>
-            <option data-i18n="form_type_o2">Site vitrine + Hébergement &amp; maintenance</option>
-            <option data-i18n="form_type_o3">Pack complexe + Maintenance</option>
-            <option data-i18n="form_type_o4">Je ne suis pas encore sûr(e)</option>
-          </select>
-        </div>
-        <div class="fg"><label class="fl" data-i18n="form_desc">Décrivez votre projet</label><textarea class="fta" name="description" placeholder="Parlez-nous de votre activité, vos objectifs, vos inspirations…" data-i18n-ph="form_desc_ph"></textarea></div>
-        <div class="fg">
-          <label class="fl" data-i18n="form_budget">Budget envisagé (optionnel)</label>
-          <select class="fsel" name="budget">
-            <option value="" data-i18n="form_budget_ph">Préférez-vous ne pas le préciser</option>
-            <option data-i18n="form_budget_o1">Moins de 500 CHF</option>
-            <option>500 CHF – 1 500 CHF</option>
-            <option>1 500 CHF – 5 000 CHF</option>
-            <option data-i18n="form_budget_o5">Plus de 5 000 CHF</option>
-          </select>
-        </div>
-        <button type="submit" class="fsub" data-i18n="form_submit">Envoyer ma demande</button>
-        <div class="form-ok" id="formOk" data-i18n="form_ok">✓ &nbsp;Votre demande a bien été envoyée. Nous reviendrons vers vous dans les 48h.</div>
-      </form>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer id="contact">
-    <div>
-      <div class="ft-brand">OWEEBIA<em>.</em></div>
-      <div class="ft-sub" data-i18n="footer_sub">Création de sites web professionnels</div>
-    </div>
-    <div class="ft-links">
-      <a href="/cdn-cgi/l/email-protection#ee81998b8b8c878fae89838f8782c08d8183"><span class="__cf_email__" data-cfemail="d4bba3b1b1b6bdb594b3b9b5bdb8fab7bbb9">[email&#160;protected]</span></a>
-      <a href="#devis" data-i18n="cta_quote">Demander un devis</a>
-      <a href="#offres" data-i18n="nav_services">Nos offres</a>
-    </div>
-    <div class="ft-copy" data-i18n-html="footer_copy">© 2025 Oweebia<br>Tous droits réservés</div>
-  </footer>
-
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    gsap.registerPlugin(ScrollTrigger);
-
-    /* ── PRELOADER ─── */
-    const preloader = document.getElementById('preloader');
-    const plBar = document.getElementById('plBar');
-    const plCount = document.getElementById('plCount');
-    const plLogo = document.getElementById('plLogo');
-    gsap.to(plLogo, { clipPath: 'inset(0 0% 0 0)', duration: 1.1, ease: 'power4.out', delay: .15 });
-    let prog = 0;
-    const ticker = setInterval(() => {
-      prog += Math.random() * 4.5 + .8;
-      if (prog >= 100) { prog = 100; clearInterval(ticker); endLoad(); }
-      plBar.style.width = prog + '%';
-      plCount.textContent = Math.round(prog);
-    }, 38);
-    function endLoad() {
-      gsap.to(preloader, {
-        yPercent: -100, duration: 1.2, ease: 'power4.inOut', delay: .35,
-        onComplete: () => { preloader.remove(); initAurora(); heroReveal(); }
-      });
-    }
-
-    /* ── SCROLL PROGRESS BAR ─── */
-    window.addEventListener('scroll', () => {
-      const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
-      document.getElementById('progressBar').style.width = pct + '%';
-    }, { passive: true });
-
-    /* ── NAV ─── */
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => nav.classList.toggle('filled', window.scrollY > 20), { passive: true });
-    const ham = document.getElementById('navHam');
-    const mob = document.getElementById('mobMenu');
-    ham.addEventListener('click', () => {
-      const o = !mob.classList.contains('open');
-      ham.classList.toggle('open', o); mob.classList.toggle('open', o);
-      document.body.style.overflow = o ? 'hidden' : '';
-    });
-    document.querySelectorAll('.mob-lnk').forEach(a => a.addEventListener('click', () => {
-      ham.classList.remove('open'); mob.classList.remove('open'); document.body.style.overflow = '';
-    }));
-
-    /* ── TEXT SCRAMBLE ─── */
-    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ·—';
-    function scramble(el) {
-      const orig = el.dataset.orig || (el.dataset.orig = el.textContent);
-      let frame = 0, total = orig.length * 3;
-      const run = () => {
-        el.textContent = orig.split('').map((c, i) => {
-          if (c === ' ') return ' ';
-          return i < frame / 3 ? orig[i] : CHARS[Math.floor(Math.random() * CHARS.length)];
-        }).join('');
-        frame++;
-        if (frame <= total) requestAnimationFrame(run);
-        else el.textContent = orig;
-      };
-      run();
-    }
-    document.querySelectorAll('.nav-links a').forEach(a => {
-      a.addEventListener('mouseenter', () => scramble(a));
-    });
-
-    /* ── SMOOTH SCROLL ─── */
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        const t = document.querySelector(a.getAttribute('href'));
-        if (!t) return; e.preventDefault();
-        window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 72, behavior: 'smooth' });
-      });
-    });
-
-    /* ── PARALLAX ─── */
-    const bgWord = document.getElementById('heroBgWord');
-    window.addEventListener('scroll', () => {
-      if (bgWord) bgWord.style.transform = `translateY(calc(-52% + ${window.scrollY * .28}px))`;
-    }, { passive: true });
-
-    /* ── AURORA CANVAS ─── */
-    function initAurora() {
-      const canvas = document.getElementById('hero-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let W, H;
-      // Orbs: x,y (0-1 normalized), velocity, size, color
-      const orbs = [
-        { x:.18, y:.75, vx:.00035, vy:.00025, rx:.52, ry:.48, r:201, g:166, b:106, a:.13 },
-        { x:.72, y:.22, vx:-.00028, vy:.00038, rx:.48, ry:.42, r:30,  g:50,  b:120, a:.10 },
-        { x:.45, y:.58, vx:.00022, vy:-.00032, rx:.38, ry:.44, r:180, g:110, b:35,  a:.09 },
-        { x:.88, y:.65, vx:-.00040, vy:-.00018, rx:.36, ry:.40, r:18,  g:28,  b:70,  a:.09 },
-        { x:.3,  y:.15, vx:.00015, vy:.00042, rx:.30, ry:.35, r:210, g:150, b:60,  a:.07 },
-      ];
-      function resize() {
-        W = canvas.width  = canvas.offsetWidth;
-        H = canvas.height = canvas.offsetHeight;
-      }
-      resize();
-      new ResizeObserver(resize).observe(canvas);
-      function draw() {
-        ctx.clearRect(0, 0, W, H);
-        orbs.forEach(o => {
-          o.x += o.vx; o.y += o.vy;
-          if (o.x < .05 || o.x > .95) o.vx *= -1;
-          if (o.y < .05 || o.y > .95) o.vy *= -1;
-          const cx = o.x * W, cy = o.y * H;
-          const rx = o.rx * Math.min(W, H);
-          ctx.save();
-          ctx.translate(cx, cy);
-          ctx.scale(1, o.ry / o.rx);
-          const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
-          g.addColorStop(0,   `rgba(${o.r},${o.g},${o.b},${o.a})`);
-          g.addColorStop(.5,  `rgba(${o.r},${o.g},${o.b},${o.a * .4})`);
-          g.addColorStop(1,   `rgba(${o.r},${o.g},${o.b},0)`);
-          ctx.fillStyle = g;
-          ctx.beginPath();
-          ctx.arc(0, 0, rx, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        });
-        requestAnimationFrame(draw);
-      }
-      draw();
-    }
-
-    /* ── HERO REVEAL ─── */
-    function heroReveal() {
-      gsap.to('.hero-eyebrow', { opacity: 1, duration: .8, ease: 'power2.out', delay: .05 });
-      gsap.to('.ln', { y: '0%', stagger: .13, duration: 1.1, ease: 'power4.out', delay: .15 });
-      gsap.to('.hero-bottom', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: .75 });
-      gsap.to('.scroll-hint', { opacity: 1, duration: .8, ease: 'power2.out', delay: 1.15 });
-    }
-
-    /* ── SCROLL REVEALS ─── */
-    document.querySelectorAll('.rv').forEach(el => {
-      ScrollTrigger.create({ trigger: el, start: 'top 88%', onEnter: () => el.classList.add('in') });
-    });
-
-    /* ── ANIMATED COUNTERS ─── */
-    document.querySelectorAll('.ctr').forEach(el => {
-      const target = +el.dataset.target;
-      ScrollTrigger.create({
-        trigger: el, start: 'top 85%', once: true,
-        onEnter: () => gsap.to({ v: 0 }, {
-          v: target, duration: 1.8, ease: 'power2.out',
-          onUpdate: function() { el.textContent = Math.round(this.targets()[0].v); }
-        })
-      });
-    });
-
-    /* ── 3D CARD TILT ─── */
-    document.querySelectorAll('.tilt').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - .5;
-        const y = (e.clientY - r.top)  / r.height - .5;
-        card.style.transform = `perspective(900px) rotateY(${x * 7}deg) rotateX(${-y * 7}deg) scale(1.015)`;
-        // spotlight
-        card.style.setProperty('--sx', ((e.clientX - r.left) / r.width * 100) + '%');
-        card.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100) + '%');
-      });
-      card.addEventListener('mouseleave', () => {
-        gsap.to(card, { rotateX: 0, rotateY: 0, scale: 1, duration: .7, ease: 'power3.out', clearProps: 'transform' });
-      });
-    });
-
-    /* ── FORM ─── */
-    const form = document.getElementById('devisForm');
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const btn = form.querySelector('.fsub');
-      btn.textContent = 'Envoi en cours…'; btn.style.opacity = '.5'; btn.style.pointerEvents = 'none';
-      const data = {
-        access_key: '20643d38-3dbe-4dec-8ad5-be0bd3a563db',
-        subject: `Demande de devis — ${form.querySelector('[name="nom"]').value}`,
-        from_name: 'Oweebia Site Web',
-        nom:         form.querySelector('[name="nom"]').value,
-        entreprise:  form.querySelector('[name="entreprise"]').value,
-        email:       form.querySelector('[name="email"]').value,
-        telephone:   form.querySelector('[name="telephone"]').value,
-        offre:       form.querySelector('[name="offre"]').value,
-        description: form.querySelector('[name="description"]').value,
-        budget:      form.querySelector('[name="budget"]').value,
-      };
-      try {
-        const res  = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(data)
-        });
-        const json = await res.json();
-        if (json.success) {
-          form.querySelectorAll('.fi,.fsel,.fta,.fsub').forEach(el => { el.style.opacity = '.3'; el.style.pointerEvents = 'none'; });
-          document.getElementById('formOk').style.display = 'block';
-        } else {
-          btn.textContent = 'Erreur — réessayez'; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
-        }
-      } catch {
-        btn.textContent = 'Erreur réseau'; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
-      }
-    });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    /* ── LANGUAGE TOGGLE ─── */
-    const TRANSLATIONS = {
-      fr: {
-        nav_about: 'À propos',
-        nav_services: 'Offres',
-        nav_portfolio: 'Réalisations',
-        nav_contact: 'Contact',
-        cta_quote: 'Demander un devis',
-        hero_eyebrow: 'Création de sites web · 2025',
-        hero_line1: 'Votre présence',
-        hero_line2: 'en ligne,',
-        hero_line3: 'pensée pour durer.',
-        hero_sub: 'Oweebia conçoit des sites web sur mesure pour les entreprises et entrepreneurs qui veulent se distinguer.',
-        hero_discover: 'Découvrir',
-        mq1: 'Site Vitrine <span class="mq-sep">·</span>',
-        mq3: 'Maintenance mensuelle <span class="mq-sep">·</span>',
-        mq4: 'Design sur mesure <span class="mq-sep">·</span>',
-        mq5: 'Hébergement inclus <span class="mq-sep">·</span>',
-        mq6: 'SEO optimisé <span class="mq-sep">·</span>',
-        mq7: 'Compatible mobile <span class="mq-sep">·</span>',
-        about_lbl: 'À propos',
-        about_title: 'Concevoir. Construire.<br><em>Faire rayonner.</em>',
-        about_p1: "Oweebia est une agence spécialisée dans la création de sites web sur mesure. Nous accompagnons chaque client de la conception à la mise en ligne, avec une approche centrée sur la clarté, l'esthétique et la performance.",
-        about_p2: "Chaque projet est unique. Nous prenons le temps de comprendre votre activité, vos objectifs et vos clients pour vous livrer un site qui vous ressemble vraiment et qui convertit.",
-        stat1: 'Sur mesure', stat2: 'Offres adaptées', stat3: 'Accompagnement',
-        services_lbl: 'Nos offres',
-        services_title: 'Un projet, une offre<br><em>à votre mesure.</em>',
-        o1_num: 'Offre 01', o1_name: 'Site Vitrine',
-        o1_desc: 'Un site professionnel pour présenter votre activité, établir votre crédibilité et capter de nouveaux clients.',
-        o1_f1: 'Design sur mesure', o1_f2: "Jusqu'à 5 pages", o1_f3: 'Formulaire de contact',
-        o1_f4: 'Optimisation SEO de base', o1_f5: 'Compatible mobile & tablette', o1_f6: 'Livraison clé en main',
-        o2_num: 'Offre 02 — Recommandée', o2_name: 'Pack Sérénité',
-        o2_desc: "Votre site vitrine professionnel, hébergé et maintenu chaque mois pour que vous n'ayez rien à gérer.",
-        o2_f1: "Tout ce qui est inclus dans l'offre 01", o2_f2: 'Hébergement inclus',
-        o2_f3: 'Nom de domaine', o2_f4: 'Mises à jour régulières', o2_f5: 'Support prioritaire', o2_f6: 'Sauvegardes automatiques',
-        o3_num: 'Offre 03', o3_name: 'Pack Complexe',
-        o3_desc: "Pour les projets ambitieux : e-commerce, plateformes, espaces membres, intégrations avancées et maintenance continue.",
-        o3_f1: 'Architecture sur mesure', o3_f2: 'E-commerce / espace client', o3_f3: 'Intégrations & API',
-        o3_f4: 'SEO avancé', o3_f5: 'Maintenance mensuelle dédiée', o3_f6: 'Suivi de performance',
-        port_lbl: 'Réalisations', port_title: 'Nos <em>projets</em>',
-        port_coming_lbl: 'Capture de site — à venir',
-        port_p1_sub: 'Site événementiel · Collectif musical', port_p2_sub: 'Boutique en ligne', port_p3_sub: 'Application web',
-        port_soon: "D'autres réalisations seront bientôt présentées ici.",
-        quote_lbl: 'Devis gratuit', quote_title: 'Parlons<br><em>de votre projet.</em>',
-        quote_intro: 'Chaque projet est unique. Décrivez-nous vos besoins et nous vous ferons parvenir une proposition personnalisée et sans engagement sous 48h.',
-        quote_pt1: 'Réponse sous 48h ouvrées', quote_pt2: 'Devis 100% gratuit et sans engagement',
-        quote_pt3: 'Accompagnement de A à Z', quote_pt4: 'Tarification transparente',
-        form_name: 'Prénom & Nom', form_name_ph: 'Jean Dupont', form_company: 'Entreprise', form_company_ph: 'Votre société',
-        form_email: 'Email', form_phone: 'Téléphone', form_type: 'Type de projet',
-        form_type_ph: 'Sélectionnez une offre', form_type_o1: 'Site vitrine',
-        form_type_o2: 'Site vitrine + Hébergement & maintenance', form_type_o3: 'Pack complexe + Maintenance',
-        form_type_o4: "Je ne suis pas encore sûr(e)",
-        form_desc: 'Décrivez votre projet', form_desc_ph: "Parlez-nous de votre activité, vos objectifs, vos inspirations…",
-        form_budget: 'Budget envisagé (optionnel)', form_budget_ph: 'Préférez-vous ne pas le préciser',
-        form_budget_o1: 'Moins de 500 CHF', form_budget_o5: 'Plus de 5 000 CHF',
-        form_submit: 'Envoyer ma demande',
-        form_ok: '✓ &nbsp;Votre demande a bien été envoyée. Nous reviendrons vers vous dans les 48h.',
-        footer_tagline: 'Oweebia · Création Web', footer_sub: 'Création de sites web professionnels',
-        footer_copy: '© 2025 Oweebia<br>Tous droits réservés',
-      },
-      en: {
-        nav_about: 'About',
-        nav_services: 'Services',
-        nav_portfolio: 'Portfolio',
-        nav_contact: 'Contact',
-        cta_quote: 'Request a quote',
-        hero_eyebrow: 'Web design & development · 2025',
-        hero_line1: 'Your online',
-        hero_line2: 'presence,',
-        hero_line3: 'built to last.',
-        hero_sub: 'Oweebia crafts custom websites for businesses and entrepreneurs who want to stand out.',
-        hero_discover: 'Discover',
-        mq1: 'Showcase Site <span class="mq-sep">·</span>',
-        mq3: 'Monthly maintenance <span class="mq-sep">·</span>',
-        mq4: 'Custom design <span class="mq-sep">·</span>',
-        mq5: 'Hosting included <span class="mq-sep">·</span>',
-        mq6: 'SEO optimized <span class="mq-sep">·</span>',
-        mq7: 'Mobile-friendly <span class="mq-sep">·</span>',
-        about_lbl: 'About',
-        about_title: 'Design. Build.<br><em>Make it shine.</em>',
-        about_p1: 'Oweebia is an agency specialising in custom website creation. We support every client from concept to launch, with a focus on clarity, aesthetics and performance.',
-        about_p2: 'Every project is unique. We take the time to understand your business, your goals and your audience to deliver a website that truly reflects you — and converts.',
-        stat1: 'Custom-built', stat2: 'Tailored plans', stat3: 'Full support',
-        services_lbl: 'Our services',
-        services_title: 'One project, one plan<br><em>tailored for you.</em>',
-        o1_num: 'Plan 01', o1_name: 'Showcase Site',
-        o1_desc: 'A professional website to present your business, establish credibility and attract new clients.',
-        o1_f1: 'Custom design', o1_f2: 'Up to 5 pages', o1_f3: 'Contact form',
-        o1_f4: 'Basic SEO optimisation', o1_f5: 'Mobile & tablet ready', o1_f6: 'Ready to launch',
-        o2_num: 'Plan 02 — Recommended', o2_name: 'Serenity Pack',
-        o2_desc: 'Your professional showcase site, hosted and maintained every month so you have nothing to manage.',
-        o2_f1: 'Everything in Plan 01', o2_f2: 'Hosting included',
-        o2_f3: 'Domain name', o2_f4: 'Regular updates', o2_f5: 'Priority support', o2_f6: 'Automatic backups',
-        o3_num: 'Plan 03', o3_name: 'Complex Pack',
-        o3_desc: 'For ambitious projects: e-commerce, platforms, member areas, advanced integrations and ongoing maintenance.',
-        o3_f1: 'Custom architecture', o3_f2: 'E-commerce / client portal', o3_f3: 'Integrations & API',
-        o3_f4: 'Advanced SEO', o3_f5: 'Dedicated monthly maintenance', o3_f6: 'Performance tracking',
-        port_lbl: 'Portfolio', port_title: 'Our <em>projects</em>',
-        port_coming_lbl: 'Site preview — coming soon',
-        port_p1_sub: 'Event site · Music collective', port_p2_sub: 'Online shop', port_p3_sub: 'Web application',
-        port_soon: 'More projects coming soon.',
-        quote_lbl: 'Free quote', quote_title: "Let's talk about<br><em>your project.</em>",
-        quote_intro: 'Every project is unique. Tell us about your needs and we will send you a personalised, no-obligation proposal within 48 hours.',
-        quote_pt1: 'Response within 48 business hours', quote_pt2: '100% free and no-obligation quote',
-        quote_pt3: 'Full support from A to Z', quote_pt4: 'Transparent pricing',
-        form_name: 'First & Last name', form_name_ph: 'John Smith', form_company: 'Company', form_company_ph: 'Your company',
-        form_email: 'Email', form_phone: 'Phone', form_type: 'Project type',
-        form_type_ph: 'Select a plan', form_type_o1: 'Showcase site',
-        form_type_o2: 'Showcase site + Hosting & maintenance', form_type_o3: 'Complex pack + Maintenance',
-        form_type_o4: "I'm not sure yet",
-        form_desc: 'Describe your project', form_desc_ph: "Tell us about your business, goals, inspirations…",
-        form_budget: 'Estimated budget (optional)', form_budget_ph: 'Prefer not to say',
-        form_budget_o1: 'Less than 500 CHF', form_budget_o5: 'More than 5 000 CHF',
-        form_submit: 'Send my request',
-        form_ok: '✓ &nbsp;Your request has been sent. We will get back to you within 48 hours.',
-        footer_tagline: 'Oweebia · Web Design', footer_sub: 'Professional web design & development',
-        footer_copy: '© 2025 Oweebia<br>All rights reserved',
-      }
-    };
+    <!-- SEO Optimisation -->
+    <title>Suite Complète de Gestion F&B - Food Cost, ABC, ETP & Contrôle des Coûts</title>
+    <meta name="description" content="Outil tout-en-un pour restaurateurs et pâtissiers : Calculateur de Food Cost, Analyse d'inventaire ABC, Contrôle des coûts consommés/vendus et Gestion des ETP.">
+    <meta name="keywords" content="food cost, analyse abc stock, etp restaurant, controle des couts fb, fiche technique cuisine, rentabilite restauration">
+    <meta name="author" content="CH-Cook">
 
-    let currentLang = localStorage.getItem('oweebia_lang') || 'fr';
+    <!-- Script Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9963596439223210" crossorigin="anonymous"></script>
 
-    function applyLang(lang) {
-      currentLang = lang;
-      localStorage.setItem('oweebia_lang', lang);
-      const t = TRANSLATIONS[lang];
-      document.documentElement.lang = lang;
-      // text nodes
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
-      });
-      // html nodes
-      document.querySelectorAll('[data-i18n-html]').forEach(el => {
-        if (t[el.dataset.i18nHtml] !== undefined) el.innerHTML = t[el.dataset.i18nHtml];
-      });
-      // placeholders
-      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-        if (t[el.dataset.i18nPh] !== undefined) el.placeholder = t[el.dataset.i18nPh];
-      });
-      // select options (by data-i18n on the option itself)
-      document.querySelectorAll('option[data-i18n]').forEach(el => {
-        if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
-      });
-      // update toggle buttons active state
-      document.querySelectorAll('[data-lang]').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-      });
-    }
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTML2PDF pour l'export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    // Wire up all lang buttons (nav + mobile)
-    document.querySelectorAll('[data-lang]').forEach(btn => {
-      btn.addEventListener('click', () => applyLang(btn.dataset.lang));
-    });
+    <style>
+        .pdf-hide { display: block; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
 
-    // Init
-    applyLang(currentLang);
+    <!-- Pub Google Ads Haut -->
+    <div class="pdf-hide max-w-6xl mx-auto w-full mt-4 bg-gray-200 text-center text-sm text-gray-500 py-3 border border-dashed border-gray-400 rounded">
+        [Emplacement Google Ads - 728x90 Banner]
+    </div>
 
-  </script>
+    <!-- Interface Principale -->
+    <main class="max-w-6xl mx-auto w-full my-6 bg-white p-6 md:p-8 rounded-xl shadow-lg flex-grow" id="app-container">
+        
+        <!-- En-tête -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Suite de Gestion F&B</h1>
+                <p class="text-gray-500 text-sm mt-1">Outils d'optimisation financière et opérationnelle pour la restauration</p>
+            </div>
+            <div id="pdf-action-btn" class="mt-4 md:mt-0 pdf-hide">
+                <button onclick="exportPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf"></i> Imprimer / Exporter PDF
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation par Onglets -->
+        <nav class="flex border-b border-gray-200 mb-8 bg-gray-50 p-1.5 rounded-lg pdf-hide overflow-x-auto">
+            <button onclick="switchTab('recipe')" id="tab-recipe" class="tab-btn flex-1 min-w-[140px] py-2.5 px-3 text-sm font-semibold rounded-md text-blue-700 bg-white shadow-sm flex items-center justify-center gap-2">
+                <i class="fa-solid fa-utensils"></i> Fiche Technique
+            </button>
+            <button onclick="switchTab('abc')" id="tab-abc" class="tab-btn flex-1 min-w-[140px] py-2.5 px-3 text-sm font-semibold rounded-md text-gray-600 hover:text-gray-900 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-boxes-stacked"></i> Analyse ABC
+            </button>
+            <button onclick="switchTab('cost')" id="tab-cost" class="tab-btn flex-1 min-w-[140px] py-2.5 px-3 text-sm font-semibold rounded-md text-gray-600 hover:text-gray-900 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-calculator"></i> Coût Consommé / Vendu
+            </button>
+            <button onclick="switchTab('fte')" id="tab-fte" class="tab-btn flex-1 min-w-[140px] py-2.5 px-3 text-sm font-semibold rounded-md text-gray-600 hover:text-gray-900 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-users"></i> ETP & Main-d'œuvre
+            </button>
+        </nav>
+
+        <!-- MODULE 1: FICHE TECHNIQUE & FOOD COST -->
+        <section id="section-recipe" class="tab-content">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Nom du Plat</label>
+                    <input type="text" id="recipe-name" value="Filet de Bœuf Wellington" class="w-full border-gray-300 rounded-md p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Nombre de Portions</label>
+                    <input type="number" id="portions" value="4" min="1" oninput="calculateTotals()" class="w-full border-gray-300 rounded-md p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Food Cost Cible (%)</label>
+                    <input type="number" id="target-fc" value="28" min="1" oninput="calculateTotals()" class="w-full border-gray-300 rounded-md p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">TVA (%)</label>
+                    <select id="vat-rate" onchange="calculateTotals()" class="w-full border-gray-300 rounded-md p-2 text-sm border focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="8.1">Suisse - Standard (8.1%)</option>
+                        <option value="2.6">Suisse - Réduit (2.6%)</option>
+                        <option value="10">France - Restauration (10%)</option>
+                        <option value="20">France - Standard (20%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-800 text-white text-xs uppercase tracking-wider">
+                            <th class="p-3 rounded-tl-lg">Ingrédient</th>
+                            <th class="p-3">Qté Brute</th>
+                            <th class="p-3">Unité</th>
+                            <th class="p-3">Prix Unitaire (CHF/€)</th>
+                            <th class="p-3" title="Rendement après épluchage/cuisson">Rendement (%)</th>
+                            <th class="p-3 text-right">Coût Total</th>
+                            <th class="p-3 pdf-hide"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="ingredients-list">
+                        <!-- Lignes dynamiques -->
+                    </tbody>
+                </table>
+                <button onclick="addRow()" class="pdf-hide mt-3 text-sm text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1">
+                    <i class="fa-solid fa-plus-circle"></i> Ajouter un ingrédient
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-3 border-b pb-2">Coûts de Revient</h3>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-600 text-sm">Coût Total Matière :</span>
+                        <span id="total-cost" class="font-bold text-lg text-gray-900">0.00</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 text-sm">Coût par Portion :</span>
+                        <span id="portion-cost" class="font-bold text-xl text-blue-600">0.00</span>
+                    </div>
+                </div>
+                <div class="bg-gray-900 text-white p-5 rounded-lg shadow-inner">
+                    <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-3 border-b border-gray-700 pb-2">Prix de Vente Conseillé</h3>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-300 text-sm">Prix HT (Food Cost Cible) :</span>
+                        <span id="suggested-price-ht" class="font-bold text-lg">0.00</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-300 text-sm">Prix TTC (TVA incluse) :</span>
+                        <span id="suggested-price-ttc" class="font-bold text-2xl text-green-400">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 2: ANALYSE D'INVENTAIRE ABC -->
+        <section id="section-abc" class="tab-content hidden">
+            <div class="bg-blue-50 border-l-4 border-blue-600 p-4 mb-6 rounded-r-lg">
+                <h2 class="text-sm font-bold text-blue-900">Méthode de Classification ABC (Loi de Pareto)</h2>
+                <p class="text-xs text-blue-800 mt-1">
+                    Catégorie A (~80% de la valeur totale, contrôle strict) | Catégorie B (~15% de la valeur) | Catégorie C (~5% de la valeur, contrôle souple).
+                </p>
+            </div>
+
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-left border-collapse" id="abc-table">
+                    <thead>
+                        <tr class="bg-gray-800 text-white text-xs uppercase tracking-wider">
+                            <th class="p-3 rounded-tl-lg">Article / Ingrédient</th>
+                            <th class="p-3">Volume Annuel Consommé</th>
+                            <th class="p-3">Prix Unitaire Moy.</th>
+                            <th class="p-3">Valeur d'Usage Total</th>
+                            <th class="p-3 text-center rounded-tr-lg">Catégorie ABC</th>
+                            <th class="p-3 pdf-hide"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="abc-list">
+                        <!-- Rempli en JS -->
+                    </tbody>
+                </table>
+                <button onclick="addABCRow()" class="pdf-hide mt-3 text-sm text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1">
+                    <i class="fa-solid fa-plus-circle"></i> Ajouter un article en stock
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-red-50 border border-red-200 p-4 rounded-lg">
+                    <div class="text-red-700 text-xs font-bold uppercase">Catégorie A (Critique)</div>
+                    <div id="cat-a-count" class="text-2xl font-black text-red-800 mt-1">0 article</div>
+                    <div id="cat-a-val" class="text-xs text-red-600 mt-1">0.00 (0%)</div>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg">
+                    <div class="text-amber-700 text-xs font-bold uppercase">Catégorie B (Intermédiaire)</div>
+                    <div id="cat-b-count" class="text-2xl font-black text-amber-800 mt-1">0 article</div>
+                    <div id="cat-b-val" class="text-xs text-amber-600 mt-1">0.00 (0%)</div>
+                </div>
+                <div class="bg-green-50 border border-green-200 p-4 rounded-lg">
+                    <div class="text-green-700 text-xs font-bold uppercase">Catégorie C (Volume)</div>
+                    <div id="cat-c-count" class="text-2xl font-black text-green-800 mt-1">0 article</div>
+                    <div id="cat-c-val" class="text-xs text-green-600 mt-1">0.00 (0%)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 3: COÛT CONSOMMÉ VS VENDU -->
+        <section id="section-cost" class="tab-content hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <!-- Entrées données -->
+                <div class="space-y-4 bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <h3 class="text-sm font-bold text-gray-800 border-b pb-2">1. Mouvements de Stock</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Inventaire Initial</label>
+                            <input type="number" id="opening-stock" value="12000" oninput="calculateCostControl()" class="w-full border rounded p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Achats de la période</label>
+                            <input type="number" id="purchases-stock" value="35000" oninput="calculateCostControl()" class="w-full border rounded p-2 text-sm">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs text-gray-600 mb-1">Inventaire Final</label>
+                            <input type="number" id="closing-stock" value="14500" oninput="calculateCostControl()" class="w-full border rounded p-2 text-sm">
+                        </div>
+                    </div>
+
+                    <h3 class="text-sm font-bold text-gray-800 border-b pb-2 pt-2">2. Ajustements & Transferts</h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Transf. Entrants</label>
+                            <input type="number" id="transfers-in" value="500" oninput="calculateCostControl()" class="w-full border rounded p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Transf. Sortants</label>
+                            <input type="number" id="transfers-out" value="800" oninput="calculateCostControl()" class="w-full border rounded p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Repas Personnel</label>
+                            <input type="number" id="staff-meals" value="1200" oninput="calculateCostControl()" class="w-full border rounded p-2 text-sm">
+                        </div>
+                    </div>
+
+                    <h3 class="text-sm font-bold text-gray-800 border-b pb-2 pt-2">3. Chiffre d'Affaires F&B</h3>
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Ventes Totales Nettes</label>
+                        <input type="number" id="total-sales" value="115000" oninput="calculateCostControl()" class="w-full border rounded p-2 text-sm font-bold text-blue-900">
+                    </div>
+                </div>
+
+                <!-- Résultats -->
+                <div class="flex flex-col justify-between space-y-4">
+                    <div class="bg-gray-900 text-white p-6 rounded-lg shadow-md">
+                        <div class="text-xs uppercase text-gray-400 font-bold mb-1">Coût des Marchandises Consommées</div>
+                        <div id="cost-consumed" class="text-3xl font-black text-amber-400">0.00</div>
+                        <p class="text-xs text-gray-400 mt-1">(Inventaire Initial + Achats - Inventaire Final)</p>
+                    </div>
+
+                    <div class="bg-gray-900 text-white p-6 rounded-lg shadow-md">
+                        <div class="text-xs uppercase text-gray-400 font-bold mb-1">Coût des Marchandises Vendues (Cost of Sales)</div>
+                        <div id="cost-sold" class="text-3xl font-black text-green-400">0.00</div>
+                        <p class="text-xs text-gray-400 mt-1">(Consommé + Transferts In - Transferts Out - Repas Personnel)</p>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 p-6 rounded-lg">
+                        <div class="text-xs uppercase text-blue-800 font-bold mb-1">Food / Beverage Cost Réel (%)</div>
+                        <div id="real-cost-percent" class="text-4xl font-black text-blue-900">0.00 %</div>
+                        <p class="text-xs text-blue-700 mt-1">Ratio : (Coût Vendu / Chiffre d'Affaires Nettes) × 100</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 4: PRODUCTIVITÉ & ETP (FTE) -->
+        <section id="section-fte" class="tab-content hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <!-- Inputs ETP -->
+                <div class="space-y-4 bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <h3 class="text-sm font-bold text-gray-800 border-b pb-2">Paramètres de Main-d'œuvre</h3>
+                    
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Heures Travaillées Totales (Semaine)</label>
+                        <input type="number" id="hours-worked" value="320" oninput="calculateFTE()" class="w-full border rounded p-2 text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Base d'Heures d'un ETP Plein Temps / Semaine</label>
+                        <input type="number" id="fte-base" value="42" oninput="calculateFTE()" class="w-full border rounded p-2 text-sm" title="Standard Suisse: 42h, France: 35h ou 39h">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Masse Salariale Totale (Période)</label>
+                        <input type="number" id="labor-cost" value="28000" oninput="calculateFTE()" class="w-full border rounded p-2 text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Chiffre d'Affaires Réalisé (Période)</label>
+                        <input type="number" id="fte-sales" value="85000" oninput="calculateFTE()" class="w-full border rounded p-2 text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Nombre Total de Couverts Servis</label>
+                        <input type="number" id="covers-count" value="1800" oninput="calculateFTE()" class="w-full border rounded p-2 text-sm">
+                    </div>
+                </div>
+
+                <!-- Outputs ETP -->
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-gray-900 text-white p-5 rounded-lg">
+                        <div class="text-xs uppercase text-gray-400 font-semibold">Équivalents Temps Plein (ETP / FTE)</div>
+                        <div id="fte-result" class="text-4xl font-black text-blue-400 mt-1">0.00 ETP</div>
+                        <p class="text-xs text-gray-400 mt-1">Volume d'effectif réel équivalent</p>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg flex justify-between items-center">
+                        <div>
+                            <div class="text-xs text-gray-500 font-bold uppercase">Ratio Masse Salariale / CA</div>
+                            <div id="labor-cost-ratio" class="text-2xl font-bold text-gray-900 mt-1">0.0 %</div>
+                        </div>
+                        <i class="fa-solid fa-percent text-gray-300 text-3xl"></i>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg flex justify-between items-center">
+                        <div>
+                            <div class="text-xs text-gray-500 font-bold uppercase">Ventes par Heure Travaillée</div>
+                            <div id="sales-per-hour" class="text-2xl font-bold text-green-600 mt-1">0.00</div>
+                        </div>
+                        <i class="fa-solid fa-clock text-gray-300 text-3xl"></i>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg flex justify-between items-center">
+                        <div>
+                            <div class="text-xs text-gray-500 font-bold uppercase">Coût Main-d'œuvre / Couvert</div>
+                            <div id="cost-per-cover" class="text-2xl font-bold text-blue-600 mt-1">0.00</div>
+                        </div>
+                        <i class="fa-solid fa-utensils text-gray-300 text-3xl"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pub Google Ads Bas -->
+    <div class="pdf-hide max-w-6xl mx-auto w-full mb-6 bg-gray-200 text-center text-sm text-gray-500 py-3 border border-dashed border-gray-400 rounded">
+        [Emplacement Google Ads - 728x90 Banner]
+    </div>
+
+    <!-- SCRIPTS JS -->
+    <script>
+        // Data Init pour ABC
+        let abcItems = [
+            { name: "Filet de Bœuf", volume: 450, price: 48.00 },
+            { name: "Saumon Frais", volume: 300, price: 28.00 },
+            { name: "Huile d'Olive Extra", volume: 200, price: 14.50 },
+            { name: "Farine T55", volume: 1200, price: 1.10 },
+            { name: "Sel de Guérande", volume: 150, price: 0.80 }
+        ];
+
+        // Switch d'onglets
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('text-blue-700', 'bg-white', 'shadow-sm');
+                el.classList.add('text-gray-600');
+            });
+            
+            document.getElementById(`section-${tab}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            activeBtn.classList.add('text-blue-700', 'bg-white', 'shadow-sm');
+            activeBtn.classList.remove('text-gray-600');
+        }
+
+        // --- MODULE 1: FICHE TECHNIQUE ---
+        function addRow(name="", qty=1, unit="kg", price=10, yieldP=100) {
+            const tbody = document.getElementById('ingredients-list');
+            const tr = document.createElement('tr');
+            tr.className = "border-b hover:bg-gray-50 transition-colors";
+            tr.innerHTML = `
+                <td class="p-2"><input type="text" value="${name}" placeholder="Ingrédient" class="w-full p-1 border rounded text-sm"></td>
+                <td class="p-2"><input type="number" value="${qty}" step="0.01" oninput="calculateTotals()" class="qty w-20 p-1 border rounded text-sm"></td>
+                <td class="p-2">
+                    <select class="p-1 border rounded w-full text-sm">
+                        <option ${unit==='kg'?'selected':''}>kg</option>
+                        <option ${unit==='g'?'selected':''}>g</option>
+                        <option ${unit==='L'?'selected':''}>L</option>
+                        <option ${unit==='cl'?'selected':''}>cl</option>
+                        <option ${unit==='pièce'?'selected':''}>pièce</option>
+                    </select>
+                </td>
+                <td class="p-2"><input type="number" value="${price}" step="0.1" oninput="calculateTotals()" class="price w-24 p-1 border rounded text-sm"></td>
+                <td class="p-2"><input type="number" value="${yieldP}" max="100" min="1" oninput="calculateTotals()" class="yield w-20 p-1 border rounded text-sm"></td>
+                <td class="p-2 text-right font-semibold text-gray-700 cost-cell text-sm">0.00</td>
+                <td class="p-2 pdf-hide text-center">
+                    <button onclick="removeRow(this)" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+            calculateTotals();
+        }
+
+        function removeRow(btn) {
+            btn.closest('tr').remove();
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            let totalCost = 0;
+            const rows = document.querySelectorAll('#ingredients-list tr');
+            
+            rows.forEach(row => {
+                const qty = parseFloat(row.querySelector('.qty').value) || 0;
+                const price = parseFloat(row.querySelector('.price').value) || 0;
+                const yieldPercent = parseFloat(row.querySelector('.yield').value) || 100;
+                
+                const cost = (qty * price) / (yieldPercent / 100);
+                row.querySelector('.cost-cell').innerText = cost.toFixed(2);
+                totalCost += cost;
+            });
+
+            const portions = parseInt(document.getElementById('portions').value) || 1;
+            const targetFc = parseFloat(document.getElementById('target-fc').value) || 100;
+            const vatRate = parseFloat(document.getElementById('vat-rate').value) || 0;
+
+            const portionCost = totalCost / portions;
+            const suggestedPriceHT = portionCost / (targetFc / 100);
+            const suggestedPriceTTC = suggestedPriceHT * (1 + (vatRate / 100));
+
+            document.getElementById('total-cost').innerText = totalCost.toFixed(2);
+            document.getElementById('portion-cost').innerText = portionCost.toFixed(2);
+            document.getElementById('suggested-price-ht').innerText = suggestedPriceHT.toFixed(2);
+            document.getElementById('suggested-price-ttc').innerText = suggestedPriceTTC.toFixed(2);
+        }
+
+        // --- MODULE 2: ANALYSE ABC ---
+        function renderABC() {
+            const tbody = document.getElementById('abc-list');
+            tbody.innerHTML = '';
+            
+            let totalValue = abcItems.reduce((sum, item) => sum + (item.volume * item.price), 0);
+            abcItems.sort((a, b) => (b.volume * b.price) - (a.volume * a.price));
+
+            let cumVal = 0;
+            let countA = 0, countB = 0, countC = 0;
+            let valA = 0, valB = 0, valC = 0;
+
+            abcItems.forEach((item, idx) => {
+                const itemVal = item.volume * item.price;
+                cumVal += itemVal;
+                const cumPercent = (cumVal / totalValue) * 100;
+                
+                let cat = 'C';
+                let catBadge = 'bg-green-100 text-green-800 border-green-300';
+                if (cumPercent <= 80) {
+                    cat = 'A';
+                    catBadge = 'bg-red-100 text-red-800 border-red-300';
+                    countA++; valA += itemVal;
+                } else if (cumPercent <= 95) {
+                    cat = 'B';
+                    catBadge = 'bg-amber-100 text-amber-800 border-amber-300';
+                    countB++; valB += itemVal;
+                } else {
+                    countC++; valC += itemVal;
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "border-b hover:bg-gray-50";
+                tr.innerHTML = `
+                    <td class="p-2"><input type="text" value="${item.name}" onchange="updateABCItem(${idx}, 'name', this.value)" class="w-full p-1 border rounded text-sm"></td>
+                    <td class="p-2"><input type="number" value="${item.volume}" onchange="updateABCItem(${idx}, 'volume', this.value)" class="w-24 p-1 border rounded text-sm"></td>
+                    <td class="p-2"><input type="number" value="${item.price}" onchange="updateABCItem(${idx}, 'price', this.value)" class="w-24 p-1 border rounded text-sm"></td>
+                    <td class="p-2 font-bold text-gray-800 text-sm">${itemVal.toFixed(2)}</td>
+                    <td class="p-2 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-black border ${catBadge}">${cat}</span></td>
+                    <td class="p-2 pdf-hide text-center"><button onclick="removeABCItem(${idx})" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('cat-a-count').innerText = `${countA} articles`;
+            document.getElementById('cat-a-val').innerText = `${valA.toFixed(2)} (${totalValue ? ((valA/totalValue)*100).toFixed(1) : 0}%)`;
+
+            document.getElementById('cat-b-count').innerText = `${countB} articles`;
+            document.getElementById('cat-b-val').innerText = `${valB.toFixed(2)} (${totalValue ? ((valB/totalValue)*100).toFixed(1) : 0}%)`;
+
+            document.getElementById('cat-c-count').innerText = `${countC} articles`;
+            document.getElementById('cat-c-val').innerText = `${valC.toFixed(2)} (${totalValue ? ((valC/totalValue)*100).toFixed(1) : 0}%)`;
+        }
+
+        function addABCRow() {
+            abcItems.push({ name: "Nouvel Article", volume: 100, price: 5.00 });
+            renderABC();
+        }
+
+        function updateABCItem(idx, key, val) {
+            abcItems[idx][key] = key === 'name' ? val : parseFloat(val) || 0;
+            renderABC();
+        }
+
+        function removeABCItem(idx) {
+            abcItems.splice(idx, 1);
+            renderABC();
+        }
+
+        // --- MODULE 3: COÛT CONSOMMÉ VS VENDU ---
+        function calculateCostControl() {
+            const open = parseFloat(document.getElementById('opening-stock').value) || 0;
+            const purch = parseFloat(document.getElementById('purchases-stock').value) || 0;
+            const close = parseFloat(document.getElementById('closing-stock').value) || 0;
+
+            const tIn = parseFloat(document.getElementById('transfers-in').value) || 0;
+            const tOut = parseFloat(document.getElementById('transfers-out').value) || 0;
+            const staff = parseFloat(document.getElementById('staff-meals').value) || 0;
+            const sales = parseFloat(document.getElementById('total-sales').value) || 1;
+
+            const consumed = open + purch - close;
+            const sold = consumed + tIn - tOut - staff;
+            const costPercent = (sold / sales) * 100;
+
+            document.getElementById('cost-consumed').innerText = consumed.toFixed(2);
+            document.getElementById('cost-sold').innerText = sold.toFixed(2);
+            document.getElementById('real-cost-percent').innerText = `${costPercent.toFixed(2)} %`;
+        }
+
+        // --- MODULE 4: ETP & PRODUCTIVITÉ ---
+        function calculateFTE() {
+            const hours = parseFloat(document.getElementById('hours-worked').value) || 0;
+            const base = parseFloat(document.getElementById('fte-base').value) || 42;
+            const laborCost = parseFloat(document.getElementById('labor-cost').value) || 0;
+            const sales = parseFloat(document.getElementById('fte-sales').value) || 0;
+            const covers = parseFloat(document.getElementById('covers-count').value) || 1;
+
+            const fte = hours / base;
+            const laborRatio = sales > 0 ? (laborCost / sales) * 100 : 0;
+            const salesPerHour = hours > 0 ? sales / hours : 0;
+            const costPerCover = covers > 0 ? laborCost / covers : 0;
+
+            document.getElementById('fte-result').innerText = `${fte.toFixed(2)} ETP`;
+            document.getElementById('labor-cost-ratio').innerText = `${laborRatio.toFixed(1)} %`;
+            document.getElementById('sales-per-hour').innerText = salesPerHour.toFixed(2);
+            document.getElementById('cost-per-cover').innerText = costPerCover.toFixed(2);
+        }
+
+        // --- EXPORT PDF ---
+        function exportPDF() {
+            const hideElements = document.querySelectorAll('.pdf-hide');
+            hideElements.forEach(el => el.style.display = 'none');
+            
+            const element = document.getElementById('app-container');
+            const opt = {
+                margin: 5,
+                filename: 'Rapport_Gestion_FB.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                hideElements.forEach(el => el.style.display = '');
+            });
+        }
+
+        // Initialisation
+        window.onload = function() {
+            addRow("Filet de Bœuf", 1, "kg", 48.00, 85);
+            addRow("Feuilletage Pur Beurre", 0.5, "kg", 8.50, 100);
+            addRow("Duxelles de Champignons", 0.3, "kg", 12.00, 90);
+            renderABC();
+            calculateCostControl();
+            calculateFTE();
+        };
+    </script>
 </body>
 </html>
